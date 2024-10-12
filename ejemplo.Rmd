@@ -1,0 +1,69 @@
+---
+title: "Ejemplo Markdown"
+author: "Lucio Garcìa"
+date: "2024-10-09"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## Ejercicio 1
+
+##### Grafique las raices de y = 9*sin(x)-exp(83/(x^3)) entre  [36;46] cada una con un color diferente 
+
+```{r graph}
+
+
+library(ggplot2)
+
+# Definir la función polinómica
+Polinomio_newton <- function(x) {
+  y <- 9*sin(x)-exp(83/(x^3))
+  return(y)
+}
+
+# Definir la derivada de la función
+dfnewton <- function(x) {
+  df <- 9 * cos(x) + exp(83/(x^3)) * (83 * (3 * x^2)/(x^3)^2)
+  return(df)
+}
+
+# Implementación del método de Newton-Raphson
+newton_raphson <- function(p0, TOL, N) {
+  i <- 1
+  while (i <= N) {
+    p <- p0 - Polinomio_newton(p0) / dfnewton(p0)
+    if (abs(p - p0) < TOL) {
+      return(p)
+    }
+    i <- i + 1
+    p0 <- p
+  }
+  return(paste("El método falló luego de", N, "iteraciones"))
+}
+
+# Encontrar las raíces usando el método de Newton-Raphson
+raiz1 <- newton_raphson(38, 0.00001, 100)
+raiz2 <- newton_raphson(41, 0.00001, 100)
+raiz3 <- newton_raphson(44, 0.00001, 100)
+
+# Crear los datos para graficar la función
+x <- seq(from = 36, to = 46, by = 0.1)
+y <- Polinomio_newton(x)
+datos <- data.frame(x = x, y = y)
+
+# Crear un data frame con las raíces
+raices <- data.frame(x = c(raiz1, raiz2, raiz3), y = c(0, 0, 0))
+
+# Graficar la función y las raíces
+ggplot(data = datos, aes(x = x, y = y)) +
+  geom_line() +
+  geom_hline(yintercept = 0, color = "black") +  # Línea del eje x
+  geom_point(data = raices, aes(x = x, y = y, color = factor(x)), size = 3) +
+  labs(title = "Gráfico de la función y sus raíces", x = "x", y = "y") +
+  scale_color_manual(values = c("red", "blue", "green"), labels = c(raiz1, raiz2, raiz3))
+
+```
+
