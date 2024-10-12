@@ -96,13 +96,32 @@ ejercicio8<-sqldf("SELECT od.OrderID, s.SupplierName, s.City, s.Country, s.Phone
                   WHERE s.Country = 'Japan'
                   ")
 
+sqldf()
+ejercicio9 <- sqldf("
+  SELECT s.Country, 
+         s.City, 
+         COUNT(DISTINCT s.SupplierID) AS SupplierCount, 
+         COUNT(DISTINCT p.ProductID) AS ProductCount
+  FROM suppliers s
+  INNER JOIN products p 
+      ON p.SupplierID = s.SupplierID
+  GROUP BY s.Country, s.City
+")
 
 
-
-
-
-
-
+sqldf()
+ejercicio10<-sqldf("SELECT cu.CustomerName as 'Nombre_del_cliente',
+                  cu.City as Ciudad,
+                  cu.Country as Pais,
+                  COUNT(DISTINCT o.OrderID),
+                  SUM(p.price*od.Quantity) AS 'Total'
+                  FROM orders o
+                  inner JOIN orderdetails od ON o.OrderID = od.OrderID
+                  INNER JOIN products p ON p.ProductID = od.ProductID
+                  INNER JOIN customers cu ON o.CustomerID = cu.CustomerID
+                  GROUP BY o.CustomerID
+                  HAVING Total > 14000
+                  ORDER BY Total DESC")
 
 
 
