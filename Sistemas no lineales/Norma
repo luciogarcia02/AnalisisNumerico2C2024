@@ -1,0 +1,30 @@
+# Función para calcular la norma de un vector
+calcular_norma <- function(n, ...) {
+  # Paso 1: Inicializar suma en 0
+  suma <- 0
+  
+  # Recibir los valores de x1, x2, ..., xn
+  vector <- c(...)
+  
+  # Paso 2: Sumar los cuadrados de cada elemento del vector
+  for (i in 1:n) {
+    suma <- suma + vector[i]^2
+  }
+  
+  # Paso 3: Calcular la norma
+  norma <- suma^(1/2)
+  
+  # Paso 4: Devolver la norma
+  return(norma)
+}
+
+# Ejemplo de uso
+n <- 5
+x1 <- 2
+x2 <- 1
+x3 <- 3
+x4<--2
+x5<--1
+
+norma <- calcular_norma(n, x1, x2, x3,x4,x5)
+print(norma)

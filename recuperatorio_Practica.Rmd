@@ -1,0 +1,143 @@
+---
+title: "Recuperatorio parcial prueba"
+author: "Lucio García Lamothe 907983"
+date: "2024-10-13"
+output: 
+  html_document:
+    toc: true
+    toc_depth: 3
+    toc_float: true
+    collapsed: true
+    smooth_scroll: true
+    theme: journal
+    highlight: kate
+    df_print: paged
+    code_folding: show
+---
+
+# Ejercicio 1
+## a)
+```{r}
+library(ggplot2)
+
+Polinomio_newton<-function(x){
+  fx<-9*sin(x)-exp(46/(x^5))
+  return(fx)
+}
+x<-seq(from = 35, to = 45, by = 0.1)
+y<-Polinomio_newton(x)
+datos<-data.frame(x=x,y=y)
+
+graph<-ggplot(data=datos, aes(x=x,y=y))+geom_point()+
+  geom_line()+
+  geom_hline(yintercept = 0, color = "black") +  # Línea del eje x
+  labs(title = "Gráfico: 9*sin(x)-exp(46/(x^5))")
+graph
+
+p01<-38
+p02<-41
+p03<-44
+
+dfnewton <- function(x){
+  df <- 9 * cos(x) + exp(46/(x^5)) * (46 * (5 * x^4)/(x^5)^2)
+  return(df)
+}
+
+newton_raphson <- function(p0, TOL,N){
+  i <- 1
+  while(i<=N){
+    x <- p0
+    p <- p0- Polinomio_newton(p0)/dfnewton(p0)
+    if(abs(p-p0)<TOL){
+      return(p)
+    }
+    i <- i+1
+    p0 <- p
+  }
+  return(paste("El metodo fallo luego de", N,"iteraciones"))
+}
+
+
+newton_raphson(p01,0.00001,10) ##Raiz1
+newton_raphson(p02,0.00001,10) ##Raiz2
+newton_raphson(p03,0.00001,10) ##Raiz3
+
+```
+## b)
+```{r}
+  newton_raphson_con_pasos_intermedios <- function(p0, TOL,N){
+  i <- 1
+  while(i<=N){
+    x <- p0
+    p <- p0- Polinomio_newton(p0)/dfnewton(p0)
+    print(p)
+    if(abs(p-p0)<TOL){
+      return(p)
+    }
+    i <- i+1
+    p0 <- p
+  }
+  return(paste("El metodo fallo luego de", N,"iteraciones"))
+  }
+
+newton_raphson_con_pasos_intermedios(41,0.0000000001,5)
+```
+El código pareciera mostrar que se aproxima a 40.72936 (raíz 2)
+```{r message=FALSE, warning=FALSE}
+grafico_con_colores<-ggplot(data=datos, aes(x=x,y=y))+geom_point(size = 0)+
+  geom_line()+
+  geom_hline(yintercept = 0, color = "black") +  # Línea del eje x
+  geom_point(aes(x=37.81045,y=0, color="red",size=1))+
+  geom_point(aes(x=40.72936,y=0, color="blue",size=1))+
+  geom_point(aes(x=44.09364,y=0, color="green",size=1))+
+  labs(title = "Grafico con raices")
+grafico_con_colores
+```
+
+# Ejercicio 3 - Factorizacion
+
+```{r}
+A<-matrix(c(1,0.0004,0.0466,
+          0.0004,1,-0.0274,
+          0.0466,-0.0274,1),nrow = 3, byrow = TRUE)
+
+cholesky<-function(A){
+  n<-nrow(A)
+  L<-matrix(0,n,n)
+  for(i in 1:n){
+    L[i,i]<-sqrt(A[i,i]-sum(L[i,1:(i-1)]^2))
+    if(i<n){
+      for(j in (i+1):n){
+        L[j,i]<-(A[j,i]-sum(L[j,1:(i-1)]*L[i,1:(i-1)]))/L[i,i]
+      }
+    }
+    
+  }
+  return(L)
+}
+
+L<-cholesky(A)
+print(L)
+Ltrans<-t(L)
+print(Ltrans)
+print(L%*%Ltrans)
+
+```
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

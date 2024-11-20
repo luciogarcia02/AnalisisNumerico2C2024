@@ -1,0 +1,65 @@
+---
+title: "4- sistemas no lineales"
+author: "Lucio García Lamothe 907983"
+date: "2024-10-13"
+output: html_document
+---
+
+#Ejercicio 4
+
+Utilice el método de Newton para resolver el siguiente Sistema de Ecuaciones No Lineales, tomando como punto inicial (1, 1, −1).
+ 4x − cos(yz) - 0.6 = 0
+ 9 * (x^2) − 82 * (y + 1/10)^2 + sin(z) + 0.84 = 0
+ exp(−xy) + 21 * z - 3 + (11/3) * pi = 0
+Aproxime la solución con una tolerancia de 10−6
+
+```{r}
+F <- function(x) {
+  c(
+    4*x[1] - cos(x[2]*x[3]) - 0.6, 
+    9 * (x[1]^2) -82 * (x[2] + 1/10)^2 + sin(x[3]) + 0.84,
+    exp(-x[1]*x[2]) + 21 * x[3] - 3 + (11/3) * pi
+    )
+}
+
+J <- function(x) {
+  matrix(c(
+    4, sin(x[2]*x[3])*x[3],sin(x[2]*x[3])*x[2],   
+    18, -(82 * (2 * (x[2] + 1/10))), -cos(x[3]),
+    -(exp(-x[1] * x[2]) * x[2]), -(exp(-x[1] * x[2])*x[1]), 21
+  ), nrow = 3, byrow = TRUE)
+}
+
+# Método de Newton-Raphson para sistemas de ecuaciones no lineales
+newton_raphson_sistema <- function(x0, tol = 1e-6, N = 100) {
+  k <- 0
+  x <- x0
+  while (k < N) {
+    Fx <- F(x)
+    Jx <- J(x)
+    
+    # Resolver el sistema lineal J(x) * y = -F(x)
+    y <- solve(Jx, -Fx)
+    
+    # Actualizar la solución
+    x <- x + y
+    
+    # Verificar la convergencia
+    if (norm(y, type = "2") < tol) {
+      cat("Solución encontrada en iteración", k + 1, ":\n")
+      return(x)
+    }
+    
+    k <- k + 1
+  }
+  
+  cat("Número máximo de iteraciones excedido\n")
+  return(x)
+}
+
+# Ejemplo de uso
+x0 <- c(1, 1, -1)  # Aproximación inicial
+solucion <- newton_raphson_sistema(x0)
+print(solucion)
+```
+

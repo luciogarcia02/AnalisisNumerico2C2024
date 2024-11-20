@@ -1,0 +1,48 @@
+# Función que define el sistema de ecuaciones no lineales
+F <- function(x) {
+  c(
+    # Ejemplo para un sistema con n=2 (puedes cambiar estas ecuaciones según el caso)
+    x[1]^2 + x[2]^2 - 1,  # Primera ecuación
+    x[1] - x[2]           # Segunda ecuación
+  )
+}
+
+# Función que calcula la Jacobiana (derivadas parciales)
+J <- function(x) {
+  matrix(c(
+    2*x[1], 2*x[2],  # Derivadas parciales de la primera ecuación
+    1, -1            # Derivadas parciales de la segunda ecuación
+  ), nrow = 2, byrow = TRUE)
+}
+
+# Método de Newton-Raphson para sistemas de ecuaciones no lineales
+newton_raphson_sistema <- function(x0, tol = 1e-8, N = 100) {
+  k <- 0
+  x <- x0
+  while (k < N) {
+    Fx <- F(x)
+    Jx <- J(x)
+    
+    # Resolver el sistema lineal J(x) * y = -F(x)
+    y <- solve(Jx, -Fx)
+    
+    # Actualizar la solución
+    x <- x + y
+    
+    # Verificar la convergencia
+    if (norm(y, type = "2") < tol) {
+      cat("Solución encontrada en iteración", k + 1, ":\n")
+      return(x)
+    }
+    
+    k <- k + 1
+  }
+  
+  cat("Número máximo de iteraciones excedido\n")
+  return(x)
+}
+
+# Ejemplo de uso
+x0 <- c(0.5, 0.5)  # Aproximación inicial
+solucion <- newton_raphson_sistema(x0)
+print(solucion)

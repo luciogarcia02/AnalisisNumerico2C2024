@@ -174,7 +174,7 @@ Polinomio_newton <- function(x){
 }
 
 #CALCULAR LA DERIVADA
-df <- D(expression(x-0.8-10*sin(x)),"x")
+df <- D(expression(exp(-x*y) + 21 * z - 3 + (11/3) * pi),"z")
 df
 
 dfnewton <- function(x){
