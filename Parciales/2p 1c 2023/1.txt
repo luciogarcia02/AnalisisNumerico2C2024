@@ -1,0 +1,4 @@
+1. polinomio interpolante de newton
+2. aproximación con polinomio y spline
+3. simulacion de activos independientes (caminos y precios finales)
+4. integración simson compuesto de una función normal
